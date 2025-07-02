@@ -8,6 +8,11 @@ from openpyxl.utils import get_column_letter
 
 st.set_page_config(page_title="Inventory Formatter", layout="centered")
 
+from PIL import Image
+
+logo = Image.open("logo.png")
+st.image(logo, width=200)
+
 st.title("📦 Inventory Formatter (Web)")
 uploaded_file = st.file_uploader("Upload raw inventory file (.csv or .xlsx)", type=["csv", "xlsx"])
 
