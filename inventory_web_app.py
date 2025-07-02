@@ -14,6 +14,19 @@ logo = Image.open("logo.png")
 st.image(logo, width=200)
 
 st.title("📦 Inventory Formatter (Web)")
+st.markdown("""
+### How to Use:
+1. Download your INVENTORY OVERVIEW REPORT on Leaflink
+2. 📁 Upload your raw inventory file (.csv or .xlsx)
+3. 📊 The app will automatically format it:
+   - Grouped by Brand → Product Line
+   - Adds subtotals and clean spacing
+   - Missing Product Lines become **"Uncategorized"**
+4. 📥 Click the green button to download your formatted Excel file
+
+**Works on Mac, PC, and mobile browsers.**
+""")
+
 uploaded_file = st.file_uploader("Upload raw inventory file (.csv or .xlsx)", type=["csv", "xlsx"])
 
 # Helper function to clean price
