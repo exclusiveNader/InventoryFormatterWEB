@@ -204,7 +204,6 @@ with tabs[2]:
 
             df.columns = [c.strip() for c in df.columns]
 
-            # Correct columns: Quantity and Line Item Total
             df["Product Count (Units)"] = pd.to_numeric(df["Product Count (Units)"], errors="coerce").fillna(0).astype(int)
             df["Total"] = df["Total"].replace('[\$,]', '', regex=True).replace(',', '', regex=True).astype(float)
 
@@ -212,21 +211,35 @@ with tabs[2]:
             df_out.columns = ["Customer", "Brand", "Qty (Units)", "Line Item Total"]
             df_out.sort_values(["Customer", "Brand"], inplace=True)
 
-            # Group and subtotal
+            # Group by customer and calculate subtotals
             grouped_output = []
+            total_units_all = 0
+            total_dollars_all = 0
+
             for customer, group in df_out.groupby("Customer"):
                 grouped_output.append(group)
 
-                total_qty = group["Qty (Units)"].sum()
-                total_price = group["Line Item Total"].sum()
+                subtotal_qty = group["Qty (Units)"].sum()
+                subtotal_price = group["Line Item Total"].sum()
 
-                total_row = {
+                total_units_all += subtotal_qty
+                total_dollars_all += subtotal_price
+
+                subtotal_row = {
                     "Customer": f"TOTAL - {customer}",
-                    "Qty (Units)": total_qty,
-                    "Line Item Total": f"${total_price:,.2f}"
+                    "Qty (Units)": subtotal_qty,
+                    "Line Item Total": f"${subtotal_price:,.2f}"
                 }
-                grouped_output.append(pd.DataFrame([total_row]))
+                grouped_output.append(pd.DataFrame([subtotal_row]))
                 grouped_output.append(pd.DataFrame([{}]))
+
+            # Append final grand total row
+            grand_total_row = {
+                "Customer": "GRAND TOTAL (ALL CUSTOMERS)",
+                "Qty (Units)": total_units_all,
+                "Line Item Total": f"${total_dollars_all:,.2f}"
+            }
+            grouped_output.append(pd.DataFrame([grand_total_row]))
 
             df_final = pd.concat(grouped_output, ignore_index=True)
 
@@ -249,7 +262,9 @@ with tabs[2]:
 
                     for row in range(2, sheet.max_row + 1):
                         val = sheet.cell(row=row, column=1).value
-                        if isinstance(val, str) and val.startswith("TOTAL -"):
+                        if isinstance(val, str) and (
+                            val.startswith("TOTAL -") or val.startswith("GRAND TOTAL")
+                        ):
                             for col in range(1, len(df.columns) + 1):
                                 sheet.cell(row=row, column=col).font = bold
 
