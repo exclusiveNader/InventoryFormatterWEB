@@ -14,7 +14,8 @@ st.title("🛠️ Formatter Hub")
 with st.expander("📘 How to Use"):
     st.markdown("""
     1. Choose a tab for the type of report you want to format  
-    2. Upload a raw .csv or .xlsx file  
+    2. Go to Leaflink and download the report file of your choosing
+    3. Upload the
     3. Click the green download button to get your formatted Excel file  
     """)
 
@@ -190,7 +191,7 @@ with tabs[1]:
 # ───── Order Report Formatter ─────
 with tabs[2]:
     st.subheader("📝 Order Report Formatter")
-    uploaded_file = st.file_uploader("Upload raw order report file", type=["csv", "xlsx"], key="order")
+    uploaded_file = st.file_uploader("Upload order report file", type=["csv", "xlsx"], key="order")
 
     if uploaded_file:
         try:
