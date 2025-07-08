@@ -195,43 +195,38 @@ with tabs[2]:
     st.subheader("📝 Order Report Formatter")
     uploaded_file = st.file_uploader("Upload order report file", type=["csv", "xlsx"], key="order")
 
-    if uploaded_file:
+        if uploaded_file:
         try:
             if uploaded_file.name.endswith(".csv"):
                 df = pd.read_csv(uploaded_file)
             else:
                 df = pd.read_excel(uploaded_file)
 
-            # Normalize column names
             df.columns = [c.strip() for c in df.columns]
-            # Clean column names
-df.columns = [c.strip() for c in df.columns]
 
-# Standardize prices
-if "Unit Price" in df.columns:
-    df["Unit Price"] = df["Unit Price"].replace('[\\$,]', '', regex=True).astype(float)
-else:
-    df["Unit Price"] = 0.0
+            # Fix Unit Price
+            if "Unit Price" in df.columns:
+                df["Unit Price"] = df["Unit Price"].replace('[\\$,]', '', regex=True).astype(float)
+            else:
+                df["Unit Price"] = 0.0
 
-# Fix quantity
-if "Quantity" in df.columns:
-    df["Quantity"] = pd.to_numeric(df["Quantity"], errors="coerce").fillna(0).astype(int)
-else:
-    df["Quantity"] = 0
+            # Fix Quantity
+            if "Quantity" in df.columns:
+                df["Quantity"] = pd.to_numeric(df["Quantity"], errors="coerce").fillna(0).astype(int)
+            else:
+                df["Quantity"] = 0
 
-# Compute total price if needed
-if "Total Price" in df.columns:
-    df["Total Price"] = df["Total Price"].replace('[\\$,]', '', regex=True).astype(float)
-else:
-    df["Total Price"] = df["Unit Price"] * df["Quantity"]
+            # Fix Total Price or calculate it
+            if "Total Price" in df.columns:
+                df["Total Price"] = df["Total Price"].replace('[\\$,]', '', regex=True).astype(float)
+            else:
+                df["Total Price"] = df["Unit Price"] * df["Quantity"]
 
-            df["Quantity"] = pd.to_numeric(df["Quantity"], errors="coerce").fillna(0).astype(int)
-
-            # Build cleaned dataframe
             df_out = df[["Buyer Name", "Brand", "Quantity", "Total Price"]].copy()
             df_out.columns = ["Customer", "Brand", "Qty (Units)", "Line Item Total"]
             df_out.sort_values(["Customer", "Brand"], inplace=True)
 
+            # Group and subtotal
             grouped_output = []
             for customer, group in df_out.groupby("Customer"):
                 grouped_output.append(group)
@@ -284,3 +279,4 @@ else:
 
         except Exception as e:
             st.error(f"⚠️ Error: {e}")
+
