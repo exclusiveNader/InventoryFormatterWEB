@@ -8,7 +8,7 @@ from openpyxl.utils import get_column_letter
 
 st.set_page_config(page_title="Inventory Formatter Hub", layout="centered")
 
-st.image("logo.png", width=220)
+st.image("logo.png", width=320)
 st.title("🛠️ Formatter Hub")
 
 with st.expander("📘 How to Use"):
