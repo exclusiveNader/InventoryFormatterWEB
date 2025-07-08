@@ -204,8 +204,27 @@ with tabs[2]:
 
             # Normalize column names
             df.columns = [c.strip() for c in df.columns]
-            df["Total Price"] = df["Total Price"].replace('[\$,]', '', regex=True).astype(float)
-            df["Unit Price"] = df["Unit Price"].replace('[\$,]', '', regex=True).astype(float)
+            # Clean column names
+df.columns = [c.strip() for c in df.columns]
+
+# Standardize prices
+if "Unit Price" in df.columns:
+    df["Unit Price"] = df["Unit Price"].replace('[\\$,]', '', regex=True).astype(float)
+else:
+    df["Unit Price"] = 0.0
+
+# Fix quantity
+if "Quantity" in df.columns:
+    df["Quantity"] = pd.to_numeric(df["Quantity"], errors="coerce").fillna(0).astype(int)
+else:
+    df["Quantity"] = 0
+
+# Compute total price if needed
+if "Total Price" in df.columns:
+    df["Total Price"] = df["Total Price"].replace('[\\$,]', '', regex=True).astype(float)
+else:
+    df["Total Price"] = df["Unit Price"] * df["Quantity"]
+
             df["Quantity"] = pd.to_numeric(df["Quantity"], errors="coerce").fillna(0).astype(int)
 
             # Build cleaned dataframe
