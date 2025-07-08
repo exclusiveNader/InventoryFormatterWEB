@@ -15,8 +15,10 @@ with st.expander("📘 How to Use"):
     st.markdown("""
     1. Choose a tab for the type of report you want to format  
     2. Go to Leaflink and download the report file of your choosing
-    3. Upload the
-    3. Click the green download button to get your formatted Excel file  
+    3. 📁 Upload your raw report file (.csv or .xlsx)
+    4. 📥 Click the green button to download your formatted Excel file  
+
+    **Works on Mac, PC, and mobile browsers.**
     """)
 
 tabs = st.tabs(["📦 Inventory Formatter", "📈 Products Sold Formatter", "📝 Order Report Formatter"])
