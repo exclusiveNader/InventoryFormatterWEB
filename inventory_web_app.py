@@ -195,7 +195,7 @@ with tabs[2]:
     st.subheader("📝 Order Report Formatter")
     uploaded_file = st.file_uploader("Upload order report file", type=["csv", "xlsx"], key="order")
 
-        if uploaded_file:
+    if uploaded_file:
         try:
             if uploaded_file.name.endswith(".csv"):
                 df = pd.read_csv(uploaded_file)
