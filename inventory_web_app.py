@@ -204,33 +204,11 @@ with tabs[2]:
 
             df.columns = [c.strip() for c in df.columns]
 
-            # Use correct fields
-            if "Quantity" in df.columns:
-                df["Quantity"] = (
-    df["Quantity"]
-    .astype(str)
-    .str.replace(",", "", regex=False)
-    .str.extract(r'(\\d+)', expand=False)
-    .fillna("0")
-    .astype(int)
-)
-            else:
-                df["Quantity"] = 0
+            # Correct columns: Quantity and Line Item Total
+            df["Product Count (Units)"] = pd.to_numeric(df["Product Count (Units)"], errors="coerce").fillna(0).astype(int)
+            df["Total"] = df["Total"].replace('[\$,]', '', regex=True).replace(',', '', regex=True).astype(float)
 
-            if "Line Item Total" in df.columns:
-                df["Line Item Total"] = (
-    df["Line Item Total"]
-    .astype(str)
-    .str.replace("[\$,]", "", regex=True)
-    .str.replace(",", "", regex=False)
-    .str.extract(r'(\\d+\\.?\\d*)', expand=False)
-    .fillna("0")
-    .astype(float)
-)
-            else:
-                df["Line Item Total"] = 0.0
-
-            df_out = df[["Buyer Name", "Brand", "Quantity", "Line Item Total"]].copy()
+            df_out = df[["Buyer Name", "Brand", "Product Count (Units)", "Total"]].copy()
             df_out.columns = ["Customer", "Brand", "Qty (Units)", "Line Item Total"]
             df_out.sort_values(["Customer", "Brand"], inplace=True)
 
